@@ -14,7 +14,9 @@
 #include <div64.h>
 #include <asm/arch/imx-regs.h>
 
-/* pwm_id from 0..7 */
+#define CONFIG_IMX6_PWM_PER_CLK		66000000
+
+ /* pwm_id from 0..7 */
 struct pwm_regs *pwm_id_to_reg(int pwm_id)
 {
 	switch (pwm_id) {
@@ -46,7 +48,7 @@ struct pwm_regs *pwm_id_to_reg(int pwm_id)
 }
 
 int pwm_imx_get_parms(int period_ns, int duty_ns, unsigned long *period_c,
-		      unsigned long *duty_c, unsigned long *prescale)
+	unsigned long *duty_c, unsigned long *prescale)
 {
 	unsigned long long c;
 

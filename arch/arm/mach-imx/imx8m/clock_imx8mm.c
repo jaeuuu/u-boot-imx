@@ -156,22 +156,22 @@ void dram_enable_bypass(ulong clk_val)
 	config = &imx8mm_dram_bypass_tbl[i];
 
 	clock_set_target_val(DRAM_ALT_CLK_ROOT, CLK_ROOT_ON |
-			     CLK_ROOT_SOURCE_SEL(config->alt_root_sel) |
-			     CLK_ROOT_PRE_DIV(config->alt_pre_div));
+		CLK_ROOT_SOURCE_SEL(config->alt_root_sel) |
+		CLK_ROOT_PRE_DIV(config->alt_pre_div));
 	clock_set_target_val(DRAM_APB_CLK_ROOT, CLK_ROOT_ON |
-			     CLK_ROOT_SOURCE_SEL(config->apb_root_sel) |
-			     CLK_ROOT_PRE_DIV(config->apb_pre_div));
+		CLK_ROOT_SOURCE_SEL(config->apb_root_sel) |
+		CLK_ROOT_PRE_DIV(config->apb_pre_div));
 	clock_set_target_val(DRAM_SEL_CFG, CLK_ROOT_ON |
-			     CLK_ROOT_SOURCE_SEL(1));
+		CLK_ROOT_SOURCE_SEL(1));
 }
 
 void dram_disable_bypass(void)
 {
 	clock_set_target_val(DRAM_SEL_CFG, CLK_ROOT_ON |
-			     CLK_ROOT_SOURCE_SEL(0));
+		CLK_ROOT_SOURCE_SEL(0));
 	clock_set_target_val(DRAM_APB_CLK_ROOT, CLK_ROOT_ON |
-			     CLK_ROOT_SOURCE_SEL(4) |
-			     CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV5));
+		CLK_ROOT_SOURCE_SEL(4) |
+		CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV5));
 }
 #endif
 
@@ -348,10 +348,10 @@ void enable_display_clk(unsigned char enable)
 		clock_set_target_val(MEDIA_AXI_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(2) | CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV2));
 
 		/* 200Mhz */
-		clock_set_target_val(MEDIA_APB_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(2) |CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV4));
+		clock_set_target_val(MEDIA_APB_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(2) | CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV4));
 
 		/* 27Mhz MIPI DPHY PLL ref from video PLL */
-		clock_set_target_val(MEDIA_MIPI_PHY1_REF_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(7) |CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV22));
+		clock_set_target_val(MEDIA_MIPI_PHY1_REF_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(7) | CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV22));
 		clock_enable(CCGR_DISPMIX, true);
 	} else {
 		clock_enable(CCGR_DISPMIX, false);
@@ -370,15 +370,15 @@ void enable_display_clk(unsigned char enable)
 		clock_set_target_val(DISPLAY_AXI_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(1) | CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV2));
 
 		/* 200Mhz */
-		clock_set_target_val(DISPLAY_APB_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(2) |CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV4));
+		clock_set_target_val(DISPLAY_APB_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(2) | CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV4));
 
 		clock_set_target_val(MIPI_DSI_CORE_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(1));
 
 		/* 27Mhz MIPI DPHY PLL ref from video PLL */
 #ifdef CONFIG_IMX8MN
-		clock_set_target_val(DISPLAY_DSI_PHY_REF_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(7) |CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV22));
+		clock_set_target_val(DISPLAY_DSI_PHY_REF_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(7) | CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV22));
 #else
-		clock_set_target_val(MIPI_DSI_PHY_REF_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(7) |CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV22));
+		clock_set_target_val(MIPI_DSI_PHY_REF_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(7) | CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV22));
 #endif
 		clock_enable(CCGR_DISPMIX, true);
 	} else {
@@ -408,25 +408,25 @@ void init_uart_clk(u32 index)
 	case 0:
 		clock_enable(CCGR_UART1, 0);
 		clock_set_target_val(UART1_CLK_ROOT, CLK_ROOT_ON |
-				     CLK_ROOT_SOURCE_SEL(0));
+			CLK_ROOT_SOURCE_SEL(0));
 		clock_enable(CCGR_UART1, 1);
 		return;
 	case 1:
 		clock_enable(CCGR_UART2, 0);
 		clock_set_target_val(UART2_CLK_ROOT, CLK_ROOT_ON |
-				     CLK_ROOT_SOURCE_SEL(0));
+			CLK_ROOT_SOURCE_SEL(0));
 		clock_enable(CCGR_UART2, 1);
 		return;
 	case 2:
 		clock_enable(CCGR_UART3, 0);
 		clock_set_target_val(UART3_CLK_ROOT, CLK_ROOT_ON |
-				     CLK_ROOT_SOURCE_SEL(0));
+			CLK_ROOT_SOURCE_SEL(0));
 		clock_enable(CCGR_UART3, 1);
 		return;
 	case 3:
 		clock_enable(CCGR_UART4, 0);
 		clock_set_target_val(UART4_CLK_ROOT, CLK_ROOT_ON |
-				     CLK_ROOT_SOURCE_SEL(0));
+			CLK_ROOT_SOURCE_SEL(0));
 		clock_enable(CCGR_UART4, 1);
 		return;
 	default:
@@ -441,7 +441,7 @@ void init_wdog_clk(void)
 	clock_enable(CCGR_WDOG2, 0);
 	clock_enable(CCGR_WDOG3, 0);
 	clock_set_target_val(WDOG_CLK_ROOT, CLK_ROOT_ON |
-			     CLK_ROOT_SOURCE_SEL(0));
+		CLK_ROOT_SOURCE_SEL(0));
 	clock_enable(CCGR_WDOG1, 1);
 	clock_enable(CCGR_WDOG2, 1);
 	clock_enable(CCGR_WDOG3, 1);
@@ -457,19 +457,19 @@ void init_clk_usdhc(u32 index)
 	case 0:
 		clock_enable(CCGR_USDHC1, 0);
 		clock_set_target_val(USDHC1_CLK_ROOT, CLK_ROOT_ON |
-				     CLK_ROOT_SOURCE_SEL(1));
+			CLK_ROOT_SOURCE_SEL(1));
 		clock_enable(CCGR_USDHC1, 1);
 		return;
 	case 1:
 		clock_enable(CCGR_USDHC2, 0);
 		clock_set_target_val(USDHC2_CLK_ROOT, CLK_ROOT_ON |
-				     CLK_ROOT_SOURCE_SEL(1));
+			CLK_ROOT_SOURCE_SEL(1));
 		clock_enable(CCGR_USDHC2, 1);
 		return;
 	case 2:
 		clock_enable(CCGR_USDHC3, 0);
 		clock_set_target_val(USDHC3_CLK_ROOT, CLK_ROOT_ON |
-				     CLK_ROOT_SOURCE_SEL(1));
+			CLK_ROOT_SOURCE_SEL(1));
 		clock_enable(CCGR_USDHC3, 1);
 		return;
 	default:
@@ -543,7 +543,7 @@ int clock_init(void)
 
 	/* Configure ARM at 1.2GHz */
 	clock_set_target_val(ARM_A53_CLK_ROOT, CLK_ROOT_ON |
-			     CLK_ROOT_SOURCE_SEL(2));
+		CLK_ROOT_SOURCE_SEL(2));
 
 	intpll_configure(ANATOP_ARM_PLL, MHZ(1200));
 
@@ -565,18 +565,18 @@ int clock_init(void)
 	/* config GIC to sys_pll2_100m */
 	clock_enable(CCGR_GIC, 0);
 	clock_set_target_val(GIC_CLK_ROOT, CLK_ROOT_ON |
-			     CLK_ROOT_SOURCE_SEL(3));
+		CLK_ROOT_SOURCE_SEL(3));
 	clock_enable(CCGR_GIC, 1);
 #endif
 
 	clock_set_target_val(NAND_USDHC_BUS_CLK_ROOT, CLK_ROOT_ON |
-			     CLK_ROOT_SOURCE_SEL(1));
+		CLK_ROOT_SOURCE_SEL(1));
 
 	clock_enable(CCGR_DDR1, 0);
 	clock_set_target_val(DRAM_ALT_CLK_ROOT, CLK_ROOT_ON |
-			     CLK_ROOT_SOURCE_SEL(1));
+		CLK_ROOT_SOURCE_SEL(1));
 	clock_set_target_val(DRAM_APB_CLK_ROOT, CLK_ROOT_ON |
-			     CLK_ROOT_SOURCE_SEL(1));
+		CLK_ROOT_SOURCE_SEL(1));
 	clock_enable(CCGR_DDR1, 1);
 
 	init_wdog_clk();
@@ -626,13 +626,13 @@ int set_clk_eqos(enum enet_freq type)
 
 	/* set enet axi clock 266Mhz */
 	target = CLK_ROOT_ON | ENET_AXI_CLK_ROOT_FROM_SYS1_PLL_266M |
-		 CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV1) |
-		 CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV1);
+		CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV1) |
+		CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV1);
 	clock_set_target_val(ENET_AXI_CLK_ROOT, target);
 
 	target = CLK_ROOT_ON | enet1_ref |
-		 CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV1) |
-		 CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV1);
+		CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV1) |
+		CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV1);
 	clock_set_target_val(ENET_QOS_CLK_ROOT, target);
 
 	target = CLK_ROOT_ON |
@@ -674,7 +674,7 @@ int imx_eqos_txclk_set_rate(ulong rate)
 	clock_get_target_val(ENET_QOS_CLK_ROOT, &val);
 	val &= ~(CLK_ROOT_PRE_DIV_MASK | CLK_ROOT_POST_DIV_MASK);
 	val |= CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV1) |
-	       CLK_ROOT_POST_DIV(eqos_post_div - 1);
+		CLK_ROOT_POST_DIV(eqos_post_div - 1);
 	clock_set_target_val(ENET_QOS_CLK_ROOT, val);
 
 	/* enable clock */
@@ -711,25 +711,25 @@ int set_clk_enet(enum enet_freq type)
 
 	/* set enet axi clock 266Mhz */
 	target = CLK_ROOT_ON | ENET_AXI_CLK_ROOT_FROM_SYS1_PLL_266M |
-		 CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV1) |
-		 CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV1);
+		CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV1) |
+		CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV1);
 	clock_set_target_val(ENET_AXI_CLK_ROOT, target);
 
 	target = CLK_ROOT_ON | enet1_ref |
-		 CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV1) |
-		 CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV1);
+		CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV1) |
+		CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV1);
 	clock_set_target_val(ENET_REF_CLK_ROOT, target);
 
 	target = CLK_ROOT_ON | ENET1_TIME_CLK_ROOT_FROM_PLL_ENET_MAIN_100M_CLK |
-		 CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV1) |
-		 CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV4);
+		CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV1) |
+		CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV4);
 	clock_set_target_val(ENET_TIMER_CLK_ROOT, target);
 
 #ifdef CONFIG_FEC_MXC_25M_REF_CLK
 	target = CLK_ROOT_ON |
-		 ENET_PHY_REF_CLK_ROOT_FROM_PLL_ENET_MAIN_25M_CLK |
-		 CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV1) |
-		 CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV1);
+		ENET_PHY_REF_CLK_ROOT_FROM_PLL_ENET_MAIN_25M_CLK |
+		CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV1) |
+		CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV1);
 	clock_set_target_val(ENET_PHY_REF_CLK_ROOT, target);
 #endif
 	/* enable clock */
@@ -949,7 +949,7 @@ static u32 decode_fracpll(enum clk_root_src frac_pll)
 	k = pll_fdiv_ctl1 & KDIV_MASK;
 
 	return lldiv((main_div * 65536 + k) * 24000000ULL,
-		     65536 * pre_div * (1 << post_div));
+		65536 * pre_div * (1 << post_div));
 }
 
 static u32 get_root_src_clk(enum clk_root_src root_src)
@@ -1091,10 +1091,10 @@ void init_usb_clk(void)
 
 	/* 100MHz */
 	clock_set_target_val(USB_CORE_REF_CLK_ROOT, CLK_ROOT_ON |
-			     CLK_ROOT_SOURCE_SEL(1));
+		CLK_ROOT_SOURCE_SEL(1));
 	/* 100MHz */
 	clock_set_target_val(USB_PHY_REF_CLK_ROOT, CLK_ROOT_ON |
-			     CLK_ROOT_SOURCE_SEL(1));
+		CLK_ROOT_SOURCE_SEL(1));
 
 	clock_enable(CCGR_USB_MSCALE_PL301, 1);
 	clock_enable(CCGR_USB_PHY_8MP, 1);
@@ -1121,7 +1121,7 @@ void enable_usboh3_clk(unsigned char enable)
  * Dump some clockes.
  */
 #ifndef CONFIG_SPL_BUILD
-int do_mscale_showclocks(struct cmd_tbl *cmdtp, int flag, int argc, char * const argv[])
+int do_mscale_showclocks(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 {
 	u32 freq;
 
@@ -1176,8 +1176,37 @@ int do_mscale_showclocks(struct cmd_tbl *cmdtp, int flag, int argc, char * const
 }
 
 U_BOOT_CMD(
-	clocks,	CONFIG_SYS_MAXARGS, 1, do_mscale_showclocks,
+	clocks, CONFIG_SYS_MAXARGS, 1, do_mscale_showclocks,
 	"display clocks",
 	""
 );
 #endif
+
+u32 enable_pwm_clk(u32 index)
+{
+	switch (index) {
+	case 0:
+		clock_enable(CCGR_PWM1, 0);
+		clock_set_target_val(PWM1_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(0));
+		clock_enable(CCGR_PWM1, 1);
+		break;
+	case 1:
+		clock_enable(CCGR_PWM2, 0);
+		clock_set_target_val(PWM2_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(0));
+		clock_enable(CCGR_PWM2, 1);
+		break;
+	case 2:
+		clock_enable(CCGR_PWM3, 0);
+		clock_set_target_val(PWM3_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(0));
+		clock_enable(CCGR_PWM3, 1);
+		break;
+	case 3:
+		clock_enable(CCGR_PWM4, 0);
+		clock_set_target_val(PWM4_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(0));
+		clock_enable(CCGR_PWM4, 1);
+		break;
+	default:
+		return -EINVAL;
+	}
+	return 0;
+}

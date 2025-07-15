@@ -30,6 +30,7 @@
 #include <imx_sip.h>
 #include <linux/arm-smccc.h>
 #include <mmc.h>
+#include <pwm.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -42,7 +43,7 @@ static iomux_v3_cfg_t const uart_pads[] = {
 };
 
 static iomux_v3_cfg_t const wdog_pads[] = {
-	MX8MP_PAD_GPIO1_IO02__WDOG1_WDOG_B  | MUX_PAD_CTRL(WDOG_PAD_CTRL),
+	MX8MP_PAD_GPIO1_IO02__WDOG1_WDOG_B | MUX_PAD_CTRL(WDOG_PAD_CTRL),
 };
 
 #ifdef CONFIG_NAND_MXS
@@ -240,7 +241,7 @@ static int setup_typec(void)
 	ret = tcpc_init(&port2, port2_config, NULL);
 	if (ret) {
 		printf("%s: tcpc port2 init failed, err=%d\n",
-		       __func__, ret);
+			__func__, ret);
 	} else if (tcpc_pd_sink_check_charging(&port2)) {
 		printf("Power supply on USB2\n");
 
@@ -272,7 +273,7 @@ static int setup_typec(void)
 	ret = tcpc_init(&port1, port1_config, NULL);
 	if (ret) {
 		printf("%s: tcpc port1 init failed, err=%d\n",
-		       __func__, ret);
+			__func__, ret);
 	} else {
 		return ret;
 	}
@@ -333,16 +334,16 @@ static void dwc3_nxp_usb_phy_init(struct dwc3_device *dwc3)
 
 	/* USB3.0 PHY signal fsel for 100M ref */
 	RegData = readl(dwc3->base + USB_PHY_CTRL0);
-	RegData = (RegData & 0xfffff81f) | (0x2a<<5);
+	RegData = (RegData & 0xfffff81f) | (0x2a << 5);
 	writel(RegData, dwc3->base + USB_PHY_CTRL0);
 
 	RegData = readl(dwc3->base + USB_PHY_CTRL6);
-	RegData &=~0x1;
+	RegData &= ~0x1;
 	writel(RegData, dwc3->base + USB_PHY_CTRL6);
 
 	RegData = readl(dwc3->base + USB_PHY_CTRL1);
 	RegData &= ~(USB_PHY_CTRL1_VDATSRCENB0 | USB_PHY_CTRL1_VDATDETENB0 |
-			USB_PHY_CTRL1_COMMONONN);
+		USB_PHY_CTRL1_COMMONONN);
 	RegData |= USB_PHY_CTRL1_RESET | USB_PHY_CTRL1_ATERESET;
 	writel(RegData, dwc3->base + USB_PHY_CTRL1);
 
@@ -456,7 +457,7 @@ static int setup_eqos(void)
 
 	/* set INTF as RGMII, enable RGMII TXC clock */
 	clrsetbits_le32(&gpr->gpr[1],
-			IOMUXC_GPR_GPR1_GPR_ENET_QOS_INTF_SEL_MASK, BIT(16));
+		IOMUXC_GPR_GPR1_GPR_ENET_QOS_INTF_SEL_MASK, BIT(16));
 	setbits_le32(&gpr->gpr[1], BIT(19) | BIT(21));
 
 	return set_clk_eqos(ENET_125MHZ);
@@ -471,12 +472,107 @@ int board_phy_config(struct phy_device *phydev)
 }
 #endif
 
+#define PWM_PAD_CTRL	(PAD_CTL_DSE2 | PAD_CTL_FSEL0 | PAD_CTL_HYS)
+static iomux_v3_cfg_t const ext_wdog_pwm_pads[] = {
+	MX8MP_PAD_GPIO1_IO01__PWM1_OUT | MUX_PAD_CTRL(PWM_PAD_CTRL),
+};
+
+static void setup_ext_wdog_strobe(void)
+{
+	u32 pwm_id = 0;
+
+	imx_iomux_v3_setup_multiple_pads(ext_wdog_pwm_pads, ARRAY_SIZE(ext_wdog_pwm_pads));
+
+	enable_pwm_clk(pwm_id);
+
+	//pwm_init(pwm_id, 0, 0);
+	pwm_config(pwm_id, 100000000, 200000000);
+	pwm_init(pwm_id, 0, 0);
+	pwm_enable(pwm_id);
+
+	printf("External watchdog strobe enabled from PWM%d\n", pwm_id + 1);
+}
+
+/* CPLD IN (cpu to cpld), gpio3_io20 */
+#define CPLD_IN IMX_GPIO_NR(3, 20)
+/* CPLD OUT (cpld to cpu), gpio3_io19 */
+#define CPLD_OUT IMX_GPIO_NR(3, 19)
+/* CPLD ID, gpio1_io07 temporarily */
+#define CPLD_ID IMX_GPIO_NR(1, 7)
+/* CPLD Master/Slave LED, gpio1_io08 temporarily */
+#define CPLD_MS_LED IMX_GPIO_NR(1, 8)
+/* CPLD Active LED, gpio2_io00 temporarily */
+#define CPLD_ACT_LED IMX_GPIO_NR(2, 0)
+
+static iomux_v3_cfg_t const cpld_ctl_pads[] = {
+	MX8MP_PAD_SAI5_RXFS__GPIO3_IO19 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX8MP_PAD_SAI5_RXC__GPIO3_IO20 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX8MP_PAD_GPIO1_IO07__GPIO1_IO07 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX8MP_PAD_GPIO1_IO08__GPIO1_IO08 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX8MP_PAD_SD1_CLK__GPIO2_IO00 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+
+static void setup_cpld(void)
+{
+	int id;
+	int cpld_out;
+
+	imx_iomux_v3_setup_multiple_pads(cpld_ctl_pads, ARRAY_SIZE(cpld_ctl_pads));
+
+	gpio_request(CPLD_IN, "cpld_in");
+	gpio_request(CPLD_OUT, "cpld_out");
+	gpio_request(CPLD_ID, "cpld_id");
+	gpio_request(CPLD_MS_LED, "cpld_ms_led");
+	gpio_request(CPLD_ACT_LED, "cpld_act_led");
+
+	gpio_direction_input(CPLD_OUT);
+	gpio_direction_input(CPLD_ID);
+	gpio_direction_output(CPLD_IN, 1);
+	gpio_direction_output(CPLD_MS_LED, 1);
+	gpio_direction_output(CPLD_ACT_LED, 1);
+
+	/* high, high wait delay */
+	mdelay(100);
+
+	id = gpio_get_value(CPLD_ID);
+	if (!id) {
+		gpio_set_value(CPLD_MS_LED, 0);
+		cpld_out = gpio_get_value(CPLD_OUT);
+		printf("CPLD_OUT: [%d]\n", cpld_out);
+		if (cpld_out) {
+			gpio_direction_output(CPLD_IN, 0);
+			gpio_set_value(CPLD_ACT_LED, 0);
+			printf("MODE: Master\n");
+		} else {
+			gpio_direction_output(CPLD_IN, 1);
+			printf("MODE: Slave\n");
+		}
+	} else {
+		gpio_set_value(CPLD_MS_LED, 1);
+		mdelay(1000);
+		cpld_out = gpio_get_value(CPLD_OUT);
+		printf("CPLD_OUT: [%d]\n", cpld_out);
+		if (cpld_out) {
+			gpio_direction_output(CPLD_IN, 0);
+			gpio_set_value(CPLD_ACT_LED, 0);
+			printf("MODE: Master\n");
+		} else {
+			gpio_direction_output(CPLD_IN, 1);
+			printf("MODE: Slave\n");
+		}
+	}
+}
+
 #define DISPMIX				13
 #define MIPI				15
 
 int board_init(void)
 {
 	struct arm_smccc_res res;
+
+	setup_ext_wdog_strobe();
+	mdelay(10000);
+	setup_cpld();
 
 #ifdef CONFIG_USB_TCPC
 	setup_typec();
@@ -506,9 +602,9 @@ int board_init(void)
 
 	/* enable the dispmix & mipi phy power domain */
 	arm_smccc_smc(IMX_SIP_GPC, IMX_SIP_GPC_PM_DOMAIN,
-		      DISPMIX, true, 0, 0, 0, 0, &res);
+		DISPMIX, true, 0, 0, 0, 0, &res);
 	arm_smccc_smc(IMX_SIP_GPC, IMX_SIP_GPC_PM_DOMAIN,
-		      MIPI, true, 0, 0, 0, 0, &res);
+		MIPI, true, 0, 0, 0, 0, &res);
 
 	return 0;
 }
@@ -538,10 +634,10 @@ unsigned long spl_mmc_get_uboot_raw_sector(struct mmc *mmc)
 {
 	u32 boot_dev = spl_boot_device();
 	switch (boot_dev) {
-		case BOOT_DEVICE_MMC2:
-			return CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR - UBOOT_RAW_SECTOR_OFFSET;
-		default:
-			return CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR;
+	case BOOT_DEVICE_MMC2:
+		return CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR - UBOOT_RAW_SECTOR_OFFSET;
+	default:
+		return CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR;
 	}
 }
 #endif

@@ -51,9 +51,9 @@
 #define CONFIG_ETHPRIME                 "eth1" /* Set eqos to primary since we use its MDIO */
 
 #define CONFIG_FEC_XCV_TYPE             RGMII
-#define CONFIG_FEC_MXC_PHYADDR          1
+#define CONFIG_FEC_MXC_PHYADDR          4
 
-#define DWC_NET_PHYADDR			1
+#define DWC_NET_PHYADDR			4
 
 #define PHY_ANEG_TIMEOUT 20000
 
@@ -194,8 +194,11 @@
 #define CONFIG_SYS_INIT_SP_ADDR \
 	(CONFIG_SYS_INIT_RAM_ADDR + CONFIG_SYS_INIT_SP_OFFSET)
 
-//#define CONFIG_MMCROOT			"/dev/mmcblk1p2"  /* USDHC2
-#define CONFIG_MMCROOT			"/dev/mmcblk2p2"  /* USDHC3 */
+/* uuu tool sets CONFIG_MMCROOT path while download image on eMMC(emmc_all). 
+ * So, do not change.
+ */
+#define CONFIG_MMCROOT			"/dev/mmcblk1p2"  /* USDHC2 */
+//#define CONFIG_MMCROOT			"/dev/mmcblk2p2"  /* USDHC3
 
 /* Totally 6GB DDR */
 #define CONFIG_SYS_SDRAM_BASE		0x40000000

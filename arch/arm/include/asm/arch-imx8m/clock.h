@@ -18,7 +18,7 @@
 
 #define MHZ(X)	((X) * 1000000UL)
 
-/* Mainly for compatible to imx common code. */
+ /* Mainly for compatible to imx common code. */
 enum mxc_clock {
 	MXC_ARM_CLK = 0,
 	MXC_IPG_CLK,
@@ -267,12 +267,12 @@ unsigned int mxc_get_clock(enum mxc_clock clk);
 int clock_enable(enum clk_ccgr_index index, bool enable);
 int clock_root_enabled(enum clk_root_index clock_id);
 int clock_root_cfg(enum clk_root_index clock_id, enum root_pre_div pre_div,
-		   enum root_post_div post_div, enum clk_root_src clock_src);
+	enum root_post_div post_div, enum clk_root_src clock_src);
 int clock_set_target_val(enum clk_root_index clock_id, u32 val);
 int clock_get_target_val(enum clk_root_index clock_id, u32 *val);
 int clock_get_prediv(enum clk_root_index clock_id, enum root_pre_div *pre_div);
 int clock_get_postdiv(enum clk_root_index clock_id,
-		      enum root_post_div *post_div);
+	enum root_post_div *post_div);
 int clock_get_src(enum clk_root_index clock_id, enum clk_root_src *p_clock_src);
 void mxs_set_lcdclk(u32 base_addr, u32 freq);
 int set_clk_qspi(void);
@@ -284,3 +284,4 @@ int set_clk_eqos(enum enet_freq type);
 void hab_caam_clock_enable(unsigned char enable);
 void enable_usboh3_clk(unsigned char enable);
 u32 get_dsi_phy_ref_clk(void);
+u32 enable_pwm_clk(u32 index);

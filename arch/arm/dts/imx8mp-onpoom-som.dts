@@ -27,7 +27,7 @@
 		compatible = "regulator-fixed";
 		pinctrl-names = "default";
 		pinctrl-0 = <&pinctrl_sys_status_led>;
-		regulator-name = "VSD_3V3";
+		regulator-name = "VSD3_3V3";
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
 		gpio = <&gpio3 16 GPIO_ACTIVE_HIGH>;
@@ -35,17 +35,6 @@
 		startup-delay-us = <100>;
 		off-on-delay-us = <35000>;	/* boot delay */
 	};
-/*
-	pwm-leds {
-		compatible = "pwm-leds";
-
-		wdog-strobe {
-			label = "watchdog-strobe";
-			pwms = <&pwm1 0 200000000 50>;
-			max-brightness = <100>;
-		};
-	};
-*/
 };
 
 &pwm1 {
@@ -178,15 +167,6 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&pinctrl_typec>;
 		reg = <0x3d>;
-		/*
-		 * Set gpio1-io9 pin to int pin.
-		 * This pin is asserted as active-low.
-		 * Refer to PTN5150 datasheet.
-		 * Refer to linux doc, "interrupts.txt" for "interrupts" property.
-		 * '9' is index on parent, '8' is active-low.
-		 */
-		//interrupt-parent = <&gpio1>;
-		//interrupts = <9 8>;
 		i2c-bus = <0x1>;
 
 		port {
