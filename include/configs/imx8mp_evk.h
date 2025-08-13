@@ -24,7 +24,7 @@
 #define CONFIG_SYS_SPL_MALLOC_START	0x42200000
 #define CONFIG_SYS_SPL_MALLOC_SIZE	SZ_512K	/* 512 KB */
 
-/* For RAW image gives a error info not panic */
+ /* For RAW image gives a error info not panic */
 #define CONFIG_SPL_ABORT_ON_RAW_IMAGE
 
 #if defined(CONFIG_NAND_BOOT)
@@ -194,11 +194,11 @@
 #define CONFIG_SYS_INIT_SP_ADDR \
 	(CONFIG_SYS_INIT_RAM_ADDR + CONFIG_SYS_INIT_SP_OFFSET)
 
-/* uuu tool sets CONFIG_MMCROOT path while download image on eMMC(emmc_all). 
+/* uuu tool sets CONFIG_MMCROOT path while download image on eMMC(emmc_all).
  * So, do not change.
  */
-#define CONFIG_MMCROOT			"/dev/mmcblk1p2"  /* USDHC2 */
-//#define CONFIG_MMCROOT			"/dev/mmcblk2p2"  /* USDHC3
+ //#define CONFIG_MMCROOT			"/dev/mmcblk1p2"  /* USDHC2 */
+#define CONFIG_MMCROOT			"/dev/mmcblk2p2"  /* USDHC3 */
 
 /* Totally 6GB DDR */
 #define CONFIG_SYS_SDRAM_BASE		0x40000000

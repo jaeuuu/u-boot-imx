@@ -534,29 +534,41 @@ static void setup_cpld(void)
 	/* high, high wait delay */
 	mdelay(100);
 
+	/* CPLD ID read */
 	id = gpio_get_value(CPLD_ID);
 	if (!id) {
+		/* Master LED on */
 		gpio_set_value(CPLD_MS_LED, 0);
+		/* PLD_OUT read */
 		cpld_out = gpio_get_value(CPLD_OUT);
 		printf("CPLD_OUT: [%d]\n", cpld_out);
 		if (cpld_out) {
+			/* PLD_IN write */
 			gpio_direction_output(CPLD_IN, 0);
+			/* Activation LED on */
 			gpio_set_value(CPLD_ACT_LED, 0);
 			printf("MODE: Master\n");
 		} else {
+			/* PLD_IN write */
 			gpio_direction_output(CPLD_IN, 1);
 			printf("MODE: Slave\n");
 		}
 	} else {
+		/* Slave LED on */
 		gpio_set_value(CPLD_MS_LED, 1);
+		/* 1s delay on slave slot */
 		mdelay(1000);
+		/* PLD_OUT read */
 		cpld_out = gpio_get_value(CPLD_OUT);
 		printf("CPLD_OUT: [%d]\n", cpld_out);
 		if (cpld_out) {
+			/* PLD_IN write */
 			gpio_direction_output(CPLD_IN, 0);
+			/* Activation LED on */
 			gpio_set_value(CPLD_ACT_LED, 0);
 			printf("MODE: Master\n");
 		} else {
+			/* PLD_IN write */
 			gpio_direction_output(CPLD_IN, 1);
 			printf("MODE: Slave\n");
 		}
@@ -571,7 +583,7 @@ int board_init(void)
 	struct arm_smccc_res res;
 
 	setup_ext_wdog_strobe();
-	mdelay(10000);
+	//mdelay(10000);
 	setup_cpld();
 
 #ifdef CONFIG_USB_TCPC

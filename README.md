@@ -19,3 +19,7 @@
 - <board/freescale/imx8mp_evk/imx8mp_evk.c> 에 setup_cpld() 함수 정의
 - 현재는 CPLD로 부터 직접 읽는 ID값이 없기 때문에 일부 GPIO를 사용해 Master/Slave를 판단토록 함.
 - 현재 CPLD를 수동 reset 해주어야 하기 때문에 10초 delay 존재. 추후 삭제 필요.
+
+### 3. QSPI bring-up
+- u-boot를 QSPI로 부팅하기 위해 USB flash 중 mtd에 writing이 가능하도록 &flexspi 노드 활성화 함.
+- <arch/arm/dts/imx8mp-onpoom-jig.dts>
